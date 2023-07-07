@@ -1,0 +1,19 @@
+{
+  "name": "ingals-community-island",
+  "description": "A Sunflower Land community island for Ingals Guild",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "test": "echo tested"
+  },
+  "dependencies": {
+    "phaser": "^3.60.0"
+  },
+  "devDependencies": {
+    "rollup": "^2.52.8",
+    "vite": "^2.4.0",
+    "vite-plugin-compress": "^2.1.0"
+  }
+}

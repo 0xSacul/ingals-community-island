@@ -8,7 +8,7 @@ class ExternalScene extends window.BaseScene {
     constructor() {
         super({
             map: {
-                tilesetUrl: "https://0xsacul.github.io/ingals-community-island/tileset.png",
+                tilesetUrl: "https://sacul.cloud/tileset.png",
             },
             player: {
                 spawn: {

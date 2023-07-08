@@ -8,7 +8,7 @@ class ExternalScene extends window.BaseScene {
     constructor() {
         super({
             map: {
-                tileset: "https://sacul.cloud/tileset.png",
+                tilesetUrl: "https://0xsacul.github.io/ingals-community-island/tileset.png",
             },
             player: {
                 spawn: {
@@ -28,7 +28,11 @@ class ExternalScene extends window.BaseScene {
         });
 
         this.load.image('bubbleKey', 'world/speech_bubble.png');
-        this.load.image('skeletonPet', 'https://sacul.cloud/skeleton_walk.gif');
+        this.load.spritesheet('skeletonWalking', 'https://sacul.cloud/skeleton_walk_strip8.png', { frameWidth: 64, frameHeight: 64, frameMax: 8 });
+        this.load.spritesheet('skeletonIdle', 'https://sacul.cloud/skeleton_idle_strip6.png', {
+            frameWidth: 64,
+            frameHeight: 64,
+        });
 
         this.load.bitmapFont(
             "Small 5x3",
@@ -100,27 +104,28 @@ class ExternalScene extends window.BaseScene {
         /* steve_soubrette = this.add.image(151, 977, 'steveSoubrette');
         steve_soubrette.setScale(0.05); */
 
-        skeleton_pet = this.add.image(151, 977, 'skeletonPet');
+        skeleton_pet = this.physics.add.sprite(151, 977, 'skeletonWalking');
         skeleton_pet.setScale(1);
 
-        // Create the NPC sprite and set its position
-        skeleton_pet.x = 151;
-        skeleton_pet.y = 800;
 
-        // Create a idle animation for the NPC using the first frame of the gif
         this.anims.create({
-            key: 'skeleton_idle',
-            frames: [{
-                key: 'skeletonPet',
-                frame: 0
-            }],
-            frameRate: 10,
-            repeat: -1
+            key: 'skeleton_walk',
+            frames: this.anims.generateFrameNumbers('skeletonWalking', { frames: [0, 1, 2, 3, 4, 5, 6, 7] }),
+            repeat: -1,
+            frameRate: 10
         });
 
+        this.anims.create({
+            key: 'skeleton_idle',
+            frames: this.anims.generateFrameNumbers('skeletonIdle', {
+                start: 0,
+                end: 5
+            }),
+            repeat: -1,
+            frameRate: 10
+        });
 
-
-
+        skeleton_pet.anims.play('skeleton_idle', true);
     }
 
     update() {
@@ -135,10 +140,14 @@ class ExternalScene extends window.BaseScene {
 
         // Adjust the NPC's position to follow the player with walking animation
         if (distance > 20) {
-            skeleton_pet.x += dx / distance * speed;
-            skeleton_pet.y += dy / distance * speed;
+            //skeleton_pet.x += dx / distance * speed;
+            //skeleton_pet.y += dy / distance * speed;
+            skeleton_pet.anims.play('skeleton_walk', true);
+            //skeleton_pet.anims.stop('skeleton_idle', true);
+
         } else {
-            //skeleton_pet.anims.stop();
+            skeleton_pet.anims.stop('skeleton_walk', true);
+            //skeleton_pet.anims.play('skeleton_idle', true);
         }
     }
 

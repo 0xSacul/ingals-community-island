@@ -7,6 +7,7 @@ let skeleton_pet;
 class ExternalScene extends window.BaseScene {
     constructor() {
         super({
+            name: "community_island",
             map: {
                 tilesetUrl: "https://sacul.cloud/tileset.png",
             },
@@ -15,6 +16,11 @@ class ExternalScene extends window.BaseScene {
                     x: 151,
                     y: 977,
                 },
+            },
+            mmo: {
+                enabled: true,
+                url: "ws://localhost:2567",
+                roomId: "ingalsRoom",
             },
         });
     }
@@ -28,9 +34,9 @@ class ExternalScene extends window.BaseScene {
         });
 
         this.load.image('bubbleKey', 'world/speech_bubble.png');
-        this.load.spritesheet('skeletonWalking', 'https://sacul.cloud/skeleton_walk_strip8.png', { frameWidth: 64, frameHeight: 64, frameMax: 8 });
+        this.load.spritesheet('skeletonWalking', 'https://sacul.cloud/skeleton_walk_strip8.png', { frameWidth: 96, frameHeight: 64 });
         this.load.spritesheet('skeletonIdle', 'https://sacul.cloud/skeleton_idle_strip6.png', {
-            frameWidth: 64,
+            frameWidth: 96,
             frameHeight: 64,
         });
 
@@ -110,7 +116,10 @@ class ExternalScene extends window.BaseScene {
 
         this.anims.create({
             key: 'skeleton_walk',
-            frames: this.anims.generateFrameNumbers('skeletonWalking', { frames: [0, 1, 2, 3, 4, 5, 6, 7] }),
+            frames: this.anims.generateFrameNumbers('skeletonWalking', {
+                start: 0,
+                end: 7
+            }),
             repeat: -1,
             frameRate: 10
         });
@@ -125,7 +134,7 @@ class ExternalScene extends window.BaseScene {
             frameRate: 10
         });
 
-        skeleton_pet.anims.play('skeleton_idle', true);
+        skeleton_pet.anims.play('skeletonWalking', true);
     }
 
     update() {
@@ -136,17 +145,20 @@ class ExternalScene extends window.BaseScene {
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         // Set the NPC's movement speed
-        const speed = 1; // Adjust the speed as needed
+        const speed = 0.75; // Adjust the speed as needed
 
         // Adjust the NPC's position to follow the player with walking animation
         if (distance > 20) {
-            //skeleton_pet.x += dx / distance * speed;
-            //skeleton_pet.y += dy / distance * speed;
+            skeleton_pet.x += dx / distance * speed;
+            skeleton_pet.y += dy / distance * speed;
             skeleton_pet.anims.play('skeleton_walk', true);
             //skeleton_pet.anims.stop('skeleton_idle', true);
 
         } else {
             skeleton_pet.anims.stop('skeleton_walk', true);
+
+            // show frame 0 for idle
+            skeleton_pet.setFrame(0);
             //skeleton_pet.anims.play('skeleton_idle', true);
         }
     }

@@ -19,7 +19,7 @@ class ExternalScene extends window.BaseScene {
             },
             mmo: {
                 enabled: true,
-                url: "ws://localhost:2567",
+                url: "ws://ingals.sacul.cloud/",
                 roomId: "local", // Need to be ingals_main once fixed on SFL side.
             },
         });

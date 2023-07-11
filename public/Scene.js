@@ -1,25 +1,38 @@
-let frog;
-let bubble;
-let direction = "right";
-let steve_soubrette;
-let skeleton_pet;
+const Pedro = {
+    body: "Goblin Potion",
+    hat: "Sleeping Otter",
+    hair: "Buzz Cut",
+    shirt: "SFL T-Shirt",
+    pants: "Farmer Pants",
+    tool: "Pirate Scimitar",
+};
+
+const Witch = {
+    body: "Goblin Potion",
+    hair: "White Long Hair",
+    shirt: "Maiden Top",
+    pants: "Farmer Pants",
+    tool: "Dawn Lamp"
+};
 
 class ExternalScene extends window.BaseScene {
     constructor() {
         super({
             name: "community_island",
             map: {
-                tilesetUrl: "https://sacul.cloud/tileset.png",
+                tilesetUrl: "https://0xsacul.github.io/ingals-community-island/tileset.png",
+                //tilesetUrl: "http://localhost:5500/tileset.png",
             },
             player: {
                 spawn: {
-                    x: 151,
-                    y: 977,
+                    x: 256,
+                    y: 566,
                 },
             },
             mmo: {
                 enabled: true,
-                url: "ws://ingals.sacul.cloud/",
+                url: "wss://ingals.sacul.cloud/",
+                //url: "ws://localhost:2567/",
                 roomId: "local", // Need to be ingals_main once fixed on SFL side.
             },
         });
@@ -28,141 +41,60 @@ class ExternalScene extends window.BaseScene {
     preload() {
         super.preload();
 
-        this.load.spritesheet("frog", "world/frog.png", {
-            frameWidth: 16,
-            frameHeight: 27,
-        });
-
-        this.load.image('bubbleKey', 'world/speech_bubble.png');
-        this.load.spritesheet('skeletonWalking', 'https://sacul.cloud/skeleton_walk_strip8.png', { frameWidth: 96, frameHeight: 64 });
-        this.load.spritesheet('skeletonIdle', 'https://sacul.cloud/skeleton_idle_strip6.png', {
-            frameWidth: 96,
-            frameHeight: 64,
-        });
-
         this.load.bitmapFont(
             "Small 5x3",
             "world/small_3x5.png",
             "world/small_3x5.xml"
         );
         this.load.bitmapFont("pixelmix", "world/7px.png", "world/7px.xml");
-
     }
 
     create() {
         super.create();
 
-        // Create the frog sprite and set its position
-        frog = this.add.sprite(135, 977, "frog");
-
-        // Set the frog's position
-        frog.x = 90
-        frog.y = 850; // Adjust newY to the desired y-coordinate
-
-        // Add text to the bubble using Bitmap Text
-        const text = this.add.bitmapText(0, 0, 'pixelmix', '', 3.5); // Replace 'fontKey' with your own font key and adjust the font size as needed
-        text.setMaxWidth(40);
-        text.setOrigin(0.5);
-        text.setDepth(2);
-
-        // Create the bubble using rexNinePatch
-        bubble = this.add.rexNinePatch({
-            x: frog.x,
-            y: frog.y,
-            width: text.width + 20,
-            height: text.height,
-            key: "speech_bubble",
-            columns: [5, 2, 2],
-            rows: [2, 3, 4],
-            baseFrame: undefined,
-            getFrameNameCallback: undefined
-        });
-
-        bubble.setScale(direction === "right" ? 1 : -1, 1);
-        bubble.setAlpha(0.8);
-        bubble.setDepth(1);
-        bubble.setVisible(false);
-
-        //interact with the frog
-        frog.setInteractive();
-
-        frog.on('pointerdown', function (pointer) {
-            // Toggle the visibility of the bubble and set the text content when the frog is clicked
-            bubble.x = frog.x
-            bubble.y = frog.y - 20;
-            text.x = bubble.x;
-            text.y = bubble.y;
-
-            bubble.setVisible(!bubble.visible);
-            text.setText(bubble.visible ? 'Hello World' : '');
-
-            this.currentPlayer.x = frog.x;
-            this.currentPlayer.y = frog.y;
-
-
-            setTimeout(function () {
-                bubble.setVisible(false);
-                text.setText('');
-            }, 5000);
-        }, this);
-
-
-        /* steve_soubrette = this.add.image(151, 977, 'steveSoubrette');
-        steve_soubrette.setScale(0.05); */
-
-        skeleton_pet = this.physics.add.sprite(151, 977, 'skeletonWalking');
-        skeleton_pet.setScale(1);
-
-
-        this.anims.create({
-            key: 'skeleton_walk',
-            frames: this.anims.generateFrameNumbers('skeletonWalking', {
-                start: 0,
-                end: 7
-            }),
-            repeat: -1,
-            frameRate: 10
-        });
-
-        this.anims.create({
-            key: 'skeleton_idle',
-            frames: this.anims.generateFrameNumbers('skeletonIdle', {
-                start: 0,
-                end: 5
-            }),
-            repeat: -1,
-            frameRate: 10
-        });
-
-        skeleton_pet.anims.play('skeletonWalking', true);
+        this.initialiseNPCs([
+            {
+                x: 247.5,
+                y: 532.5,
+                npc: "Pedro",
+                clothing: Pedro,
+                onClick: () => {
+                    window.openModal({
+                        npc: {
+                            name: "Geoff",
+                            clothing: npcClothing,
+                        },
+                        jsx: "Howdy farmer! Welcome on Ingals's Island! This is Island has been created by the Ingalsians for the SFL community. Feel free to explore and have fun!",
+                    });
+                },
+            },
+            {
+                x: 935,
+                y: 290,
+                npc: "Witch",
+                clothing: Witch,
+                onClick: () => {
+                    this.currentPlayer.x = 106;
+                    this.currentPlayer.y = 180;
+                },
+            }, {
+                x: 120,
+                y: 195,
+                npc: "Witch",
+                clothing: Witch,
+                onClick: () => {
+                    this.currentPlayer.x = 920;
+                    this.currentPlayer.y = 290;
+                },
+            },
+        ]);
     }
 
     update() {
         super.update();
-        // Calculate the distance between the player and the NPC
-        const dx = this.currentPlayer.x - skeleton_pet.x;
-        const dy = this.currentPlayer.y - skeleton_pet.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        // Set the NPC's movement speed
-        const speed = 0.75; // Adjust the speed as needed
-
-        // Adjust the NPC's position to follow the player with walking animation
-        if (distance > 20) {
-            skeleton_pet.x += dx / distance * speed;
-            skeleton_pet.y += dy / distance * speed;
-            skeleton_pet.anims.play('skeleton_walk', true);
-            //skeleton_pet.anims.stop('skeleton_idle', true);
-
-        } else {
-            skeleton_pet.anims.stop('skeleton_walk', true);
-
-            // show frame 0 for idle
-            skeleton_pet.setFrame(0);
-            //skeleton_pet.anims.play('skeleton_idle', true);
-        }
+        /* 
+            display player position for debugging
+        */
+        //console.log(this.currentPlayer.x, this.currentPlayer.y);
     }
-
-
-
 }

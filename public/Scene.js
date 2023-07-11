@@ -48,7 +48,6 @@ class ExternalScene extends window.BaseScene {
         );
         this.load.bitmapFont("pixelmix", "world/7px.png", "world/7px.xml");
 
-        // load image
         this.load.image("Cloud", "https://0xsacul.github.io/ingals-community-island/public/cloud.png");
     }
 
@@ -62,12 +61,15 @@ class ExternalScene extends window.BaseScene {
                 npc: "Pedro",
                 clothing: Pedro,
                 onClick: () => {
+
+                    if (this.CheckPlayerDistance(247.5, 532.5)) return;
+
                     window.openModal({
                         npc: {
                             name: "Pedro",
                             clothing: Pedro,
                         },
-                        jsx: "Howdy farmer! Welcome on Ingals's Island! This is Island has been created by the Ingalsians for the SFL community. Feel free to explore and have fun!",
+                        jsx: "Howdy farmer, welcome on Ingals's Island! This Island has been created by the Ingalsians for the SFL community. Feel free to explore and have fun!",
                     });
                 },
             },
@@ -77,8 +79,7 @@ class ExternalScene extends window.BaseScene {
                 npc: "Witch",
                 clothing: Witch,
                 onClick: () => {
-                    /*  this.currentPlayer.x = 106;
-                     this.currentPlayer.y = 180; */
+                    if (this.CheckPlayerDistance(935, 290)) return;
 
                     this.CloudTeleportAnimation(106, 180);
 
@@ -89,8 +90,7 @@ class ExternalScene extends window.BaseScene {
                 npc: "Witch",
                 clothing: Witch,
                 onClick: () => {
-                    /* this.currentPlayer.x = 920;
-                    this.currentPlayer.y = 290; */
+                    if (this.CheckPlayerDistance(120, 195)) return;
 
                     this.CloudTeleportAnimation(920, 290);
                 },
@@ -106,13 +106,16 @@ class ExternalScene extends window.BaseScene {
         //console.log(this.currentPlayer.x, this.currentPlayer.y);
     }
 
+    CheckPlayerDistance(x, y) {
+        let player_distance = Phaser.Math.Distance.Between(this.currentPlayer.x, this.currentPlayer.y, x, y);
+        return player_distance > 40;
+    }
+
     CloudTeleportAnimation(x, y) {
         // Spawn the cloud below the player
-        this.cloud = this.add.sprite(this.currentPlayer.x, this.currentPlayer.y + 20, "Cloud");
+        this.cloud = this.add.sprite(this.currentPlayer.x, this.currentPlayer.y + 15, "Cloud");
         this.cloud.setScale(0.75);
         this.cloud.setDepth(1);
-
-        console.log(this.cloud);
 
         // Calculate the distance between the player and the tp point
         let player_distance = Phaser.Math.Distance.Between(this.currentPlayer.x, this.currentPlayer.y, x, y);
@@ -122,7 +125,7 @@ class ExternalScene extends window.BaseScene {
         this.tweens.add({
             targets: this.cloud,
             x: x,
-            y: y,
+            y: y + 15,
             duration: cloud_distance * 8,
             ease: 'Linear',
             onComplete: () => {

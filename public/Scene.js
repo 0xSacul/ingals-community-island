@@ -47,6 +47,9 @@ class ExternalScene extends window.BaseScene {
             "world/small_3x5.xml"
         );
         this.load.bitmapFont("pixelmix", "world/7px.png", "world/7px.xml");
+
+        // load image
+        this.load.image("Cloud", "https://0xsacul.github.io/ingals-community-island/public/cloud.png");
     }
 
     create() {
@@ -61,8 +64,8 @@ class ExternalScene extends window.BaseScene {
                 onClick: () => {
                     window.openModal({
                         npc: {
-                            name: "Geoff",
-                            clothing: npcClothing,
+                            name: "Pedro",
+                            clothing: Pedro,
                         },
                         jsx: "Howdy farmer! Welcome on Ingals's Island! This is Island has been created by the Ingalsians for the SFL community. Feel free to explore and have fun!",
                     });
@@ -74,8 +77,11 @@ class ExternalScene extends window.BaseScene {
                 npc: "Witch",
                 clothing: Witch,
                 onClick: () => {
-                    this.currentPlayer.x = 106;
-                    this.currentPlayer.y = 180;
+                    /*  this.currentPlayer.x = 106;
+                     this.currentPlayer.y = 180; */
+
+                    this.CloudTeleportAnimation(106, 180);
+
                 },
             }, {
                 x: 120,
@@ -83,8 +89,10 @@ class ExternalScene extends window.BaseScene {
                 npc: "Witch",
                 clothing: Witch,
                 onClick: () => {
-                    this.currentPlayer.x = 920;
-                    this.currentPlayer.y = 290;
+                    /* this.currentPlayer.x = 920;
+                    this.currentPlayer.y = 290; */
+
+                    this.CloudTeleportAnimation(920, 290);
                 },
             },
         ]);
@@ -97,4 +105,45 @@ class ExternalScene extends window.BaseScene {
         */
         //console.log(this.currentPlayer.x, this.currentPlayer.y);
     }
+
+    CloudTeleportAnimation(x, y) {
+        // Spawn the cloud below the player
+        this.cloud = this.add.sprite(this.currentPlayer.x, this.currentPlayer.y + 20, "Cloud");
+        this.cloud.setScale(0.75);
+        this.cloud.setDepth(1);
+
+        console.log(this.cloud);
+
+        // Calculate the distance between the player and the tp point
+        let player_distance = Phaser.Math.Distance.Between(this.currentPlayer.x, this.currentPlayer.y, x, y);
+        let cloud_distance = Phaser.Math.Distance.Between(this.cloud.x, this.cloud.y, x, y);
+
+        // Move the cloud to the tp point
+        this.tweens.add({
+            targets: this.cloud,
+            x: x,
+            y: y,
+            duration: cloud_distance * 8,
+            ease: 'Linear',
+            onComplete: () => {
+                this.cloud.destroy();
+            }
+        });
+
+        // Move the player to the tp point
+        this.tweens.add({
+            targets: this.currentPlayer,
+            x: x,
+            y: y,
+            duration: player_distance * 8,
+            ease: 'Linear',
+            onComplete: () => {
+            }
+        });
+
+
+
+    }
+
+
 }

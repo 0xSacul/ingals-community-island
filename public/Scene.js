@@ -103,8 +103,8 @@ class ExternalScene extends window.BaseScene {
         super({
             name: "community_island",
             map: {
-                //tilesetUrl: "https://0xsacul.github.io/ingals-community-island/tileset.png",
-                tilesetUrl: "http://localhost:5500/tileset.png",
+                tilesetUrl: "https://0xsacul.github.io/ingals-community-island/tileset.png",
+                //tilesetUrl: "http://localhost:5500/tileset.png",
             },
             player: {
                 spawn: {
@@ -132,7 +132,7 @@ class ExternalScene extends window.BaseScene {
         this.load.bitmapFont("pixelmix", "world/7px.png", "world/7px.xml");
 
         this.load.image("Cloud", "https://0xsacul.github.io/ingals-community-island/public/cloud.png");
-        this.load.image("RolerCoaster", "http://127.0.0.1:5500/public/roler_coaster.png");
+        this.load.image("RolerCoaster", "https://0xsacul.github.io/ingals-community-island/public/roler_coaster.png");
     }
 
     create() {

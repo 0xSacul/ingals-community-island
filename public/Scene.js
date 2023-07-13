@@ -150,7 +150,7 @@ class ExternalScene extends window.BaseScene {
                 clothing: Pedro,
                 onClick: () => {
 
-                    if (this.CheckPlayerDistance(247.5, 532.5)) return;
+                    if (this.CheckPlayerDistance(280, 532.5)) return;
 
                     window.openModal({
                         npc: {

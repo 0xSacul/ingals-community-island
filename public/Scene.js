@@ -18,85 +18,85 @@ const Witch = {
 const RolerCoaster = {
     start: {
         x: 856,
-        y: 85,
+        y: 82.5,
         speed: 0.5,
         rotation: 0,
     },
     turn_1: {
-        x: 762,
-        y: 85,
+        x: 760,
+        y: 82.5,
         speed: 0.5,
         rotation: -90,
     },
     turn_2: {
-        x: 762,
+        x: 760,
         y: 130,
         speed: 0.5,
         rotation: 0,
     },
     turn_3: {
-        x: 700,
+        x: 696.5,
         y: 130,
         speed: 0.5,
         rotation: -90,
     },
     turn_4: {
-        x: 700,
+        x: 696.5,
         y: 242.5,
         speed: 0.5,
         rotation: 0,
     },
     turn_5: {
-        x: 475,
+        x: 472.5,
         y: 242.5,
         speed: 0.5,
         rotation: -90,
     },
     turn_6: {
-        x: 475,
+        x: 472.5,
         y: 290,
         speed: 0.5,
         rotation: 0,
     },
     turn_7: {
-        x: 310,
+        x: 312.5,
         y: 290,
         speed: 0.5,
         rotation: 90,
     },
     turn_8: {
-        x: 310,
+        x: 312.5,
         y: 180,
         speed: 0.5,
         rotation: 0,
     },
     turn_9: {
-        x: 467.5,
+        x: 471,
         y: 180,
         speed: 0.5,
         rotation: 90,
     },
     turn_10: {
-        x: 467.5,
+        x: 471,
         y: 18.5,
         speed: 0.5,
         rotation: 0,
     },
     turn_11: {
-        x: 955,
+        x: 952.5,
         y: 18.5,
         speed: 0.5,
         rotation: 90,
     },
     turn_12: {
-        x: 955,
-        y: 85,
+        x: 952.5,
+        y: 82.5,
         speed: 0.5,
         rotation: 0,
     },
     end: {
         x: 856,
-        y: 85,
+        y: 82.5,
         speed: 0.5,
         rotation: 0,
     },
@@ -203,15 +203,6 @@ class ExternalScene extends window.BaseScene {
                     this.RolerCoasterAnimation();
                 },
             },
-            {
-                x: 0,
-                y: 0,
-                npc: "Player",
-                clothing: this.currentPlayer.clothing,
-                onClick: () => {
-                    console.log("Clicked on the player");
-                },
-            }
         ]);
     }
 
@@ -262,7 +253,7 @@ class ExternalScene extends window.BaseScene {
         });
     }
 
-    async RolerCoasterAnimation() {
+    RolerCoasterAnimation() {
         // Create the roller coaster path using an array of points
         const points = [
             RolerCoaster.start,
@@ -297,13 +288,9 @@ class ExternalScene extends window.BaseScene {
             duration: 20000,
             yoyo: false,
             repeat: 0,
-            rotateToPath: true,
+            rotateToPath: false,
             ease: 'Linear',
             onComplete: () => {
-                this.cameras.main.startFollow(this.currentPlayer);
-                this.currentPlayer.x = 856;
-                this.currentPlayer.y = 98;
-                this.currentPlayer.setAlpha(1);
                 rollerCoaster.destroy();
             }
         });
@@ -312,7 +299,7 @@ class ExternalScene extends window.BaseScene {
         this.currentPlayer.x = RolerCoaster.start.x;
         this.currentPlayer.y = RolerCoaster.start.y;
 
-        // Update the player position to follow the roller coaster every tick
+        // Update the player position to follow the roller coaster
         this.tweens.add({
             targets: this.currentPlayer,
             x: rollerCoaster.x,
@@ -322,30 +309,12 @@ class ExternalScene extends window.BaseScene {
             onUpdate: () => {
                 this.currentPlayer.x = rollerCoaster.x;
                 this.currentPlayer.y = rollerCoaster.y - 10;
-
-                // Handle rotateToPath
-                if (rollerCoaster.rotateToPath) {
-                    let currentRotation = rollerCoaster.rotation.toFixed(2);
-                    //console.log(currentRotation); // debug
-
-                    if (currentRotation == 3.14) {
-                        currentRotation = 0.00
-                        rollerCoaster.rotation = 0.00;
-                        this.currentPlayer.y = this.currentPlayer.y + 15;
-                    } else if (currentRotation == 1.57) {
-                        this.currentPlayer.x = this.currentPlayer.x + 10;
-                        this.currentPlayer.y = this.currentPlayer.y + 10;
-                    } else if (currentRotation == -1.57) {
-                        this.currentPlayer.x = this.currentPlayer.x - 10;
-                        this.currentPlayer.y = this.currentPlayer.y + 10;
-                    }
-
-                    this.currentPlayer.rotation = currentRotation;
-                }
+            },
+            onComplete: () => {
+                this.currentPlayer.x = 856;
+                this.currentPlayer.y = 96;
             }
         });
-
-        this.cameras.main.startFollow(rollerCoaster);
 
     }
 
@@ -353,21 +322,6 @@ class ExternalScene extends window.BaseScene {
 
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    Tweens(targets, x, y, duration, ease) {
-        return new Promise(resolve => {
-            this.tweens.add({
-                targets: targets,
-                x: x,
-                y: y,
-                duration: duration,
-                ease: ease,
-                onComplete: () => {
-                    resolve();
-                }
-            });
-        });
     }
 
 }

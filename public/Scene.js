@@ -112,8 +112,8 @@ class ExternalScene extends window.BaseScene {
             },
             player: {
                 spawn: {
-                    x: 824, // 256 
-                    y: 140, // 566
+                    x: 256, // 256  824
+                    y: 566, // 566  140
                 },
             },
             mmo: {
@@ -346,7 +346,6 @@ class ExternalScene extends window.BaseScene {
         });
 
         this.cameras.main.startFollow(rollerCoaster);
-        //this.currentPlayer.setAlpha(0);
 
     }
 

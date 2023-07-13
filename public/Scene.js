@@ -18,73 +18,87 @@ const Witch = {
 const RolerCoaster = {
     start: {
         x: 856,
-        y: 90,
+        y: 85,
         speed: 0.5,
+        rotation: 0,
     },
     turn_1: {
         x: 762,
-        y: 90,
+        y: 85,
         speed: 0.5,
+        rotation: -90,
     },
     turn_2: {
         x: 762,
-        y: 140,
+        y: 130,
         speed: 0.5,
+        rotation: 0,
     },
     turn_3: {
         x: 700,
-        y: 140,
+        y: 130,
         speed: 0.5,
+        rotation: -90,
     },
     turn_4: {
         x: 700,
-        y: 255,
+        y: 242.5,
         speed: 0.5,
+        rotation: 0,
     },
     turn_5: {
         x: 475,
-        y: 255,
+        y: 242.5,
         speed: 0.5,
+        rotation: -90,
     },
     turn_6: {
         x: 475,
-        y: 300,
+        y: 290,
         speed: 0.5,
+        rotation: 0,
     },
     turn_7: {
         x: 310,
-        y: 300,
+        y: 290,
         speed: 0.5,
+        rotation: 90,
     },
     turn_8: {
         x: 310,
         y: 180,
         speed: 0.5,
+        rotation: 0,
     },
     turn_9: {
         x: 467.5,
         y: 180,
         speed: 0.5,
+        rotation: 90,
     },
     turn_10: {
         x: 467.5,
         y: 18.5,
         speed: 0.5,
+        rotation: 0,
     },
     turn_11: {
         x: 955,
         y: 18.5,
         speed: 0.5,
+        rotation: 90,
     },
     turn_12: {
         x: 955,
-        y: 90,
+        y: 85,
         speed: 0.5,
+        rotation: 0,
     },
     end: {
         x: 856,
-        y: 90,
+        y: 85,
         speed: 0.5,
+        rotation: 0,
     },
 }
 
@@ -98,8 +112,8 @@ class ExternalScene extends window.BaseScene {
             },
             player: {
                 spawn: {
-                    x: 256, // 256 
-                    y: 566, // 566
+                    x: 824, // 256 
+                    y: 140, // 566
                 },
             },
             mmo: {
@@ -298,9 +312,41 @@ class ExternalScene extends window.BaseScene {
         this.currentPlayer.x = RolerCoaster.start.x;
         this.currentPlayer.y = RolerCoaster.start.y;
 
+        // Update the player position to follow the roller coaster every tick
+        this.tweens.add({
+            targets: this.currentPlayer,
+            x: rollerCoaster.x,
+            y: rollerCoaster.y,
+            duration: 20000,
+            ease: 'Linear',
+            onUpdate: () => {
+                this.currentPlayer.x = rollerCoaster.x;
+                this.currentPlayer.y = rollerCoaster.y - 10;
+
+                // Handle rotateToPath
+                if (rollerCoaster.rotateToPath) {
+                    let currentRotation = rollerCoaster.rotation.toFixed(2);
+                    //console.log(currentRotation); // debug
+
+                    if (currentRotation == 3.14) {
+                        currentRotation = 0.00
+                        rollerCoaster.rotation = 0.00;
+                        this.currentPlayer.y = this.currentPlayer.y + 15;
+                    } else if (currentRotation == 1.57) {
+                        this.currentPlayer.x = this.currentPlayer.x + 10;
+                        this.currentPlayer.y = this.currentPlayer.y + 10;
+                    } else if (currentRotation == -1.57) {
+                        this.currentPlayer.x = this.currentPlayer.x - 10;
+                        this.currentPlayer.y = this.currentPlayer.y + 10;
+                    }
+
+                    this.currentPlayer.rotation = currentRotation;
+                }
+            }
+        });
 
         this.cameras.main.startFollow(rollerCoaster);
-        this.currentPlayer.setAlpha(0);
+        //this.currentPlayer.setAlpha(0);
 
     }
 

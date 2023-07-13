@@ -18,82 +18,72 @@ const Witch = {
 const RolerCoaster = {
     start: {
         x: 856,
-        y: 78.5,
+        y: 90,
         speed: 0.5,
     },
     turn_1: {
         x: 762,
-        y: 78.5,
+        y: 90,
         speed: 0.5,
     },
     turn_2: {
         x: 762,
-        y: 127.5,
+        y: 140,
         speed: 0.5,
     },
     turn_3: {
         x: 700,
-        y: 127.5,
+        y: 140,
         speed: 0.5,
     },
     turn_4: {
         x: 700,
-        y: 238.5,
+        y: 255,
         speed: 0.5,
     },
     turn_5: {
         x: 475,
-        y: 238.5,
+        y: 255,
         speed: 0.5,
     },
     turn_6: {
         x: 475,
-        y: 287.5,
+        y: 300,
         speed: 0.5,
     },
     turn_7: {
-        x: 315,
-        y: 287.5,
+        x: 310,
+        y: 300,
         speed: 0.5,
     },
     turn_8: {
-        x: 315,
-        y: 215,
+        x: 310,
+        y: 180,
         speed: 0.5,
     },
     turn_9: {
-        x: 350,
-        y: 175,
+        x: 467.5,
+        y: 180,
         speed: 0.5,
     },
     turn_10: {
-        x: 475,
-        y: 175,
+        x: 467.5,
+        y: 18.5,
         speed: 0.5,
     },
     turn_11: {
-        x: 475,
-        y: 55,
+        x: 955,
+        y: 18.5,
         speed: 0.5,
     },
     turn_12: {
-        x: 515,
-        y: 15,
-        speed: 0.5,
-    },
-    turn_13: {
-        x: 950,
-        y: 15,
-        speed: 0.5,
-    },
-    turn_14: {
-        x: 950,
-        y: 78.5,
+        x: 955,
+        y: 90,
         speed: 0.5,
     },
     end: {
         x: 856,
-        y: 78.5,
+        y: 90,
         speed: 0.5,
     },
 }
@@ -140,7 +130,7 @@ class ExternalScene extends window.BaseScene {
 
         this.initialiseNPCs([
             {
-                x: 247.5,
+                x: 280,
                 y: 532.5,
                 npc: "Pedro",
                 clothing: Pedro,
@@ -188,17 +178,26 @@ class ExternalScene extends window.BaseScene {
                 onClick: () => {
                     if (this.CheckPlayerDistance(824, 110)) return;
 
-                    window.openModal({
+                    /*window.openModal({
                         npc: {
                             name: "Showman",
                             clothing: Pedro,
                         },
                         jsx: "Welcome to my Roler Coaster farmer! I still need a bit of time to finish it, but it the meantime you walk on it and enjoy the view! (aka Sacul didn't found a way to make it work like a real roler coaster yet).",
-                    });
+                    });*/
 
-                    //this.RolerCoasterAnimation();
+                    this.RolerCoasterAnimation();
                 },
             },
+            {
+                x: 0,
+                y: 0,
+                npc: "Player",
+                clothing: this.currentPlayer.clothing,
+                onClick: () => {
+                    console.log("Clicked on the player");
+                },
+            }
         ]);
     }
 
@@ -265,8 +264,6 @@ class ExternalScene extends window.BaseScene {
             RolerCoaster.turn_10,
             RolerCoaster.turn_11,
             RolerCoaster.turn_12,
-            RolerCoaster.turn_13,
-            RolerCoaster.turn_14,
             RolerCoaster.end
         ];
 
@@ -281,46 +278,29 @@ class ExternalScene extends window.BaseScene {
         rollerCoaster.setScale(1);
         rollerCoaster.setDepth(1);
 
-        // Calculate the distance between the player and the starting point
-        const player_distance = Phaser.Math.Distance.Between(this.currentPlayer.x, this.currentPlayer.y, RolerCoaster.start.x, RolerCoaster.start.y);
-
-        // Place the player on the roller coaster
-        const playerOffset = player_distance / path.getLength(); // Calculate the player's offset on the path
-        const playerPosition = path.getPoint(playerOffset); // Get the position on the path based on the offset
-        if (this.currentPlayer) {
-            this.currentPlayer.x = playerPosition.x;
-            this.currentPlayer.y = playerPosition.y;
-        } else {
-            console.error("currentPlayer is not defined.");
-            return;
-        }
-
-        // Start the roller coaster animation
+        // Make the roller coaster sprite follow the path
         rollerCoaster.startFollow({
-            duration: 10000,
+            duration: 20000,
             yoyo: false,
             repeat: 0,
             rotateToPath: true,
-            verticalAdjust: true,
+            ease: 'Linear',
             onComplete: () => {
+                this.cameras.main.startFollow(this.currentPlayer);
+                this.currentPlayer.x = 856;
+                this.currentPlayer.y = 98;
+                this.currentPlayer.setAlpha(1);
                 rollerCoaster.destroy();
             }
         });
 
-        // Make the player follow the roller coaster
-        this.tweens.add({
-            targets: this.currentPlayer,
-            t: 1,
-            duration: 10000,
-            ease: 'Linear',
-            onUpdate: () => {
-                const playerOffset = this.currentPlayer.t;
-                const playerPosition = path.getPoint(playerOffset);
-                this.currentPlayer.x = playerPosition.x || this.currentPlayer.x;
-                this.currentPlayer.y = playerPosition.y || this.currentPlayer.y;
-            }
-        });
+        // Put the player on the roller coaster
+        this.currentPlayer.x = RolerCoaster.start.x;
+        this.currentPlayer.y = RolerCoaster.start.y;
 
+
+        this.cameras.main.startFollow(rollerCoaster);
+        this.currentPlayer.setAlpha(0);
 
     }
 

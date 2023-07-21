@@ -3,18 +3,16 @@
   "description": "A Sunflower Land community island for Ingals Guild",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
-    "test": "echo tested"
+    "build": "npm run clean && esbuild ./src/Scene.ts --bundle --minify --tsconfig=tsconfig.json --outfile=public/Scene.js",
+    "dev": "npm run clean && esbuild ./src/Scene.ts --bundle --minify --watch --tsconfig=tsconfig.json --outfile=public/Scene.js",
+    "clean": "rimraf public/Scene.js"
   },
   "dependencies": {
+    "esbuild": "0.18.15",
     "phaser": "^3.60.0",
-    "colyseus.js": "^0.15.10"
+    "typescript": "^5.1.6"
   },
   "devDependencies": {
-    "rollup": "^2.52.8",
-    "vite": "^2.4.0",
-    "vite-plugin-compress": "^2.1.0"
+    "rimraf": "^5.0.1"
   }
 }

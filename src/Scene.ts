@@ -44,16 +44,16 @@ export default class ExternalScene extends window.BaseScene {
 
     this.load.image(
       "Cloud",
-      "https://0xsacul.github.io/ingals-community-island/public/cloud.png"
+      "https://0xsacul.github.io/ingals-community-island/pngs/cloud.png"
     );
     this.load.image(
       "RolerCoaster",
-      "https://0xsacul.github.io/ingals-community-island/public/roler_coaster.png"
+      "https://0xsacul.github.io/ingals-community-island/pngs/roler_coaster.png"
     );
 
     this.load.spritesheet(
       "TreeCut",
-      "http://localhost:5500/public/tree_cut_anim.png",
+      "https://0xsacul.github.io/ingals-community-island/pngs/tree_cut_anim.png",
       { frameWidth: 96, frameHeight: 64 }
     );
   }

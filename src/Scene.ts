@@ -11,11 +11,10 @@ import Phaser from "phaser";
 export default class ExternalScene extends window.BaseScene {
   constructor() {
     super({
-      name: "community_island",
+      name: "local",
       map: {
         tilesetUrl:
-          "https://0xsacul.github.io/ingals-community-island/tileset.png",
-        //tilesetUrl: "http://localhost:5500/tileset.png",
+          "https://0xsacul.github.io/ingals-community-island/tileset.png", // http://localhost:5500/tileset.png
       },
       player: {
         spawn: {
@@ -25,8 +24,7 @@ export default class ExternalScene extends window.BaseScene {
       },
       mmo: {
         enabled: true,
-        url: "wss://ingals.sacul.cloud/",
-        //url: "ws://localhost:2567/",
+        url: "wss://ingals.sacul.cloud/", // ws://localhost:2567/
         roomId: "local", // Need to be ingals_main once fixed on SFL side.
       },
     });
@@ -124,8 +122,8 @@ export default class ExternalScene extends window.BaseScene {
 
     // For local testing, allow Scene refresh with spacebar
     this.events.on("shutdown", () => {
-      this.cache.tilemap.remove("community_island");
-      this.scene.remove("community_island");
+      this.cache.tilemap.remove("local");
+      this.scene.remove("local");
     });
     const spaceBar = this.input.keyboard.addKey("SPACE");
     spaceBar.on("down", () => {
@@ -139,6 +137,9 @@ export default class ExternalScene extends window.BaseScene {
         display player position for debugging
     */
     //console.log(this.currentPlayer.x, this.currentPlayer.y);
+
+    // Display Other Players
+    //console.log(this);
   }
 
   CheckPlayerDistance(x: number, y: number) {

@@ -49,9 +49,21 @@ export default class ExternalScene extends window.BaseScene {
       "https://0xsacul.github.io/ingals-community-island/pngs/roler_coaster.png"
     );
 
+    this.load.image(
+      "TrustedUserHalo",
+      "https://0xsacul.github.io/ingals-community-island/pngs/halo.png"
+    );
+
     this.load.spritesheet(
-      "TreeCut",
-      "https://0xsacul.github.io/ingals-community-island/pngs/tree_cut_anim.png",
+      "TrustedUserAnimatedHalo",
+      "https://0xsacul.github.io/ingals-community-island/pngs/anim_halo.png",
+      { frameWidth: 96, frameHeight: 64 }
+    );
+
+    // Human choping tree animation
+    this.load.spritesheet(
+      "HumanChopTree",
+      "https://0xsacul.github.io/ingals-community-island/pngs/tree_cut/human_axe_anim.png",
       { frameWidth: 96, frameHeight: 64 }
     );
   }
@@ -120,6 +132,52 @@ export default class ExternalScene extends window.BaseScene {
       },
     ]);
 
+    // Place Anims
+    this.trustedUserAnimatedHalo = this.add.sprite(
+      this.currentPlayer.x,
+      this.currentPlayer.y - 15,
+      "TrustedUserAnimatedHalo"
+    );
+    this.trustedUserAnimatedHalo.setDepth(1000000000);
+    this.trustedUserAnimatedHalo.setVisible(true);
+    this.trustedUserAnimatedHalo.setScale(0.2);
+
+    this.humanChopTree = this.add.sprite(
+      this.currentPlayer.x,
+      this.currentPlayer.y + 15,
+      "HumanChopTree"
+    );
+    this.humanChopTree.setDepth(1000000000);
+    this.humanChopTree.setVisible(true);
+    this.humanChopTree.setScale(1);
+
+    // Anims
+
+    this.anims.create({
+      key: "TrustedUserAnimatedHalo",
+      frames: this.anims.generateFrameNumbers("TrustedUserAnimatedHalo", {
+        start: 0,
+        end: 12,
+      }),
+      frameRate: 5,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "HumanChopTree",
+      frames: this.anims.generateFrameNumbers("HumanChopTree", {
+        start: 0,
+        end: 9,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    // Play Anims
+
+    this.trustedUserAnimatedHalo.anims.play("TrustedUserAnimatedHalo", true);
+    this.humanChopTree.anims.play("HumanChopTree", true);
+
     // For local testing, allow Scene refresh with spacebar
     this.events.on("shutdown", () => {
       this.cache.tilemap.remove("local");
@@ -138,8 +196,7 @@ export default class ExternalScene extends window.BaseScene {
     */
     //console.log(this.currentPlayer.x, this.currentPlayer.y);
 
-    // Display Other Players
-    //console.log(this);
+    this.haloFollowPlayer();
   }
 
   CheckPlayerDistance(x: number, y: number) {
@@ -266,6 +323,11 @@ export default class ExternalScene extends window.BaseScene {
         this.currentPlayer.y = 96;
       },
     });
+  }
+
+  haloFollowPlayer() {
+    this.trustedUserAnimatedHalo.x = this.currentPlayer.x;
+    this.trustedUserAnimatedHalo.y = this.currentPlayer.y - 12.5;
   }
 
   sleep(ms: number) {

@@ -34,6 +34,11 @@ export default class ExternalScene extends window.BaseScene {
     super.preload();
 
     this.load.bitmapFont(
+      "Teeny Tiny Pixls",
+      "world/Teeny Tiny Pixls5.png",
+      "world/Teeny Tiny Pixls5.xml"
+    );
+    this.load.bitmapFont(
       "Small 5x3",
       "world/small_3x5.png",
       "world/small_3x5.xml"
@@ -78,7 +83,7 @@ export default class ExternalScene extends window.BaseScene {
         npc: "Pedro",
         clothing: Pedro,
         onClick: () => {
-          if (this.CheckPlayerDistance(280, 532.5)) return;
+          /* if (this.CheckPlayerDistance(280, 532.5)) return;
 
           window.openModal({
             npc: {
@@ -86,6 +91,30 @@ export default class ExternalScene extends window.BaseScene {
               clothing: Pedro,
             },
             jsx: "Howdy farmer, welcome on Ingals's Island! This Island has been created by the Ingalsians for the SFL community. Feel free to explore and have fun!",
+          }); */
+
+          window.openModal({
+            npc: {
+              name: "Pedro",
+              clothing: Pedro,
+            },
+            jsx: "test modal for toasts",
+            buttons: [
+              { id: "1", text: "test1" },
+              { id: "2", text: "test2" },
+            ],
+            onButtonClick: (id: string) => {
+              if (id === "1") {
+                window.createToast({
+                  text: "Test Toast 1",
+                });
+              } else if (id === "2") {
+                window.createToast({
+                  text: "Test Toast 2",
+                  item: "Eggplant",
+                });
+              }
+            },
           });
         },
       },
@@ -187,6 +216,8 @@ export default class ExternalScene extends window.BaseScene {
     spaceBar.on("down", () => {
       this.scene.start("default");
     });
+
+    this.currentPlayer.alive = true;
   }
 
   update() {
@@ -325,9 +356,83 @@ export default class ExternalScene extends window.BaseScene {
     });
   }
 
-  haloFollowPlayer() {
-    this.trustedUserAnimatedHalo.x = this.currentPlayer.x;
-    this.trustedUserAnimatedHalo.y = this.currentPlayer.y - 12.5;
+  async handleDeath() {
+    this.currentPlayer.alive = false;
+    this.currentPlayer.setAlpha(0);
+    this.currentPlayer.body.moves = false;
+
+    const deathBackground = this.add.rectangle(
+      this.currentPlayer.x,
+      this.currentPlayer.y,
+      2048,
+      2048,
+      0x000000
+    );
+
+    const deathTextTitle = this.add.bitmapText(
+      this.currentPlayer.x - 100,
+      this.currentPlayer.y - 100,
+      "pixelmix",
+      "You died!",
+      16
+    );
+    deathTextTitle.setAlpha(1000000000);
+
+    // Change the color of the text to red
+    deathTextTitle.setTint(0xff0000, 0xff0000, 0xff0000, 0xff0000);
+    deathTextTitle.setAlpha(1);
+    // Make the text flash
+    this.tweens.add({
+      targets: deathTextTitle,
+      alpha: 0.2,
+      duration: 1000,
+      ease: "Linear",
+      yoyo: true,
+      repeat: -1,
+    });
+
+    const deathTextRespawn = this.add.bitmapText(
+      this.currentPlayer.x - 100,
+      this.currentPlayer.y - 50,
+      "pixelmix",
+      "Click anywhere on the screen to respawn.",
+      8
+    );
+
+    // text-center
+    deathTextTitle.x -= deathTextTitle.width / 2;
+    deathTextRespawn.x -= deathTextRespawn.width / 2;
+
+    // Set the camera on the texts but move the camera bit on the left to center the texts
+    this.cameras.main.startFollow(deathTextRespawn, true, 0.1, 0.1);
+    this.cameras.main.setDeadzone(0, 100);
+
+    deathBackground.setDepth(999999999);
+    deathTextTitle.setDepth(999999999);
+    deathTextRespawn.setDepth(999999999);
+
+    // Respawn the player when the player click anywhere on the screen
+    await this.sleep(1000);
+
+    this.input.on("pointerdown", () => {
+      console.log("respawn");
+      this.respawn();
+      deathBackground.destroy();
+      deathTextTitle.destroy();
+      deathTextRespawn.destroy();
+    });
+  }
+
+  respawn() {
+    // Respawn the player
+    this.currentPlayer.alive = true;
+    this.currentPlayer.setAlpha(1);
+    this.currentPlayer.body.moves = true;
+    this.currentPlayer.x = 256;
+    this.currentPlayer.y = 566;
+    this.cameras.main.stopFollow();
+    this.cameras.main.setDeadzone(0, 0);
+    this.cameras.main.startFollow(this.currentPlayer);
   }
 
   sleep(ms: number) {

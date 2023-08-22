@@ -98,6 +98,7 @@ declare global {
   interface Window {
     BaseScene: any;
     openModal: any;
+    createToast: any;
     ExternalScene: typeof ExternalScene;
   }
 }

@@ -32,11 +32,6 @@ export default class ExternalScene extends window.BaseScene {
         serverId: "ingals_room",
       },
     });
-
-    ReactDOM.render(
-      React.createElement(TestComponent),
-      document.getElementById("community-root") as Element
-    );
   }
 
   preload() {
@@ -105,23 +100,18 @@ export default class ExternalScene extends window.BaseScene {
                 text: "Howdy Farmer! Welcome on Ingals's Island! This Island has been created by the Ingalsians for the SFL community. Feel free to explore and have fun!",
               },
               {
-                text: "Test",
+                text: "Pedro est-il gay?",
                 actions: [
                   {
-                    text: "Show Custom Component",
+                    text: "Oui",
                     cb: () => {
-                      ReactDOM.render(
-                        React.createElement(TestComponent),
-                        document.getElementById("community-root") as Element
-                      );
+                      window.alert("Bon toutou");
                     },
                   },
                   {
-                    text: "Hide Custom Component",
+                    text: "Non",
                     cb: () => {
-                      ReactDOM.unmountComponentAtNode(
-                        document.getElementById("community-root") as Element
-                      );
+                      window.alert("Bah nique ta mère alors");
                     },
                   },
                 ],

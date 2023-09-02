@@ -189,14 +189,14 @@ export default class ExternalScene extends window.BaseScene {
     this.humanChopTree.anims.play("HumanChopTree", true);
 
     // For local testing, allow Scene refresh with spacebar
-    this.events.on("shutdown", () => {
+    /* this.events.on("shutdown", () => {
       this.cache.tilemap.remove("local");
       this.scene.remove("local");
     });
     const spaceBar = this.input.keyboard.addKey("SPACE");
     spaceBar.on("down", () => {
       this.scene.start("default");
-    });
+    }); */
 
     this.currentPlayer.alive = true;
   }

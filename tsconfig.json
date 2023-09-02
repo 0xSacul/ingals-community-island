@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "target": "ES2018", // or your desired target
     "module": "ESNext",
     "moduleResolution": "Node",

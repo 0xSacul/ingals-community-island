@@ -7,6 +7,9 @@ import {
   RolerCoaster,
 } from "./types";
 import Phaser from "phaser";
+import React from "react";
+import ReactDOM from "react-dom";
+import { TestComponent } from "./Components/Test";
 
 export default class ExternalScene extends window.BaseScene {
   constructor() {
@@ -24,10 +27,16 @@ export default class ExternalScene extends window.BaseScene {
       },
       mmo: {
         enabled: true,
-        url: "wss://ingals.sacul.cloud/", // ws://localhost:2567/
-        roomId: "local", // Need to be ingals_main once fixed on SFL side.
+        url: "wss://plaza.sacul.cloud/", // ws://localhost:2567/
+        roomId: "ingals_room", // Need to be ingals_main once fixed on SFL side.
+        serverId: "ingals_room",
       },
     });
+
+    ReactDOM.render(
+      React.createElement(TestComponent),
+      document.getElementById("community-root") as Element
+    );
   }
 
   preload() {
@@ -83,38 +92,41 @@ export default class ExternalScene extends window.BaseScene {
         npc: "Pedro",
         clothing: Pedro,
         onClick: () => {
-          /* if (this.CheckPlayerDistance(280, 532.5)) return;
+          if (this.CheckPlayerDistance(280, 532.5)) return;
 
           window.openModal({
             npc: {
               name: "Pedro",
               clothing: Pedro,
             },
-            jsx: "Howdy farmer, welcome on Ingals's Island! This Island has been created by the Ingalsians for the SFL community. Feel free to explore and have fun!",
-          }); */
-
-          window.openModal({
-            npc: {
-              name: "Pedro",
-              clothing: Pedro,
-            },
-            jsx: "test modal for toasts",
-            buttons: [
-              { id: "1", text: "test1" },
-              { id: "2", text: "test2" },
+            type: "speaking",
+            messages: [
+              {
+                text: "Howdy Farmer! Welcome on Ingals's Island! This Island has been created by the Ingalsians for the SFL community. Feel free to explore and have fun!",
+              },
+              {
+                text: "Test",
+                actions: [
+                  {
+                    text: "Show Custom Component",
+                    cb: () => {
+                      ReactDOM.render(
+                        React.createElement(TestComponent),
+                        document.getElementById("community-root") as Element
+                      );
+                    },
+                  },
+                  {
+                    text: "Hide Custom Component",
+                    cb: () => {
+                      ReactDOM.unmountComponentAtNode(
+                        document.getElementById("community-root") as Element
+                      );
+                    },
+                  },
+                ],
+              },
             ],
-            onButtonClick: (id: string) => {
-              if (id === "1") {
-                window.createToast({
-                  text: "Test Toast 1",
-                });
-              } else if (id === "2") {
-                window.createToast({
-                  text: "Test Toast 2",
-                  item: "Eggplant",
-                });
-              }
-            },
           });
         },
       },
@@ -161,16 +173,6 @@ export default class ExternalScene extends window.BaseScene {
       },
     ]);
 
-    // Place Anims
-    this.trustedUserAnimatedHalo = this.add.sprite(
-      this.currentPlayer.x,
-      this.currentPlayer.y - 15,
-      "TrustedUserAnimatedHalo"
-    );
-    this.trustedUserAnimatedHalo.setDepth(1000000000);
-    this.trustedUserAnimatedHalo.setVisible(true);
-    this.trustedUserAnimatedHalo.setScale(0.2);
-
     this.humanChopTree = this.add.sprite(
       this.currentPlayer.x,
       this.currentPlayer.y + 15,
@@ -181,16 +183,6 @@ export default class ExternalScene extends window.BaseScene {
     this.humanChopTree.setScale(1);
 
     // Anims
-
-    this.anims.create({
-      key: "TrustedUserAnimatedHalo",
-      frames: this.anims.generateFrameNumbers("TrustedUserAnimatedHalo", {
-        start: 0,
-        end: 12,
-      }),
-      frameRate: 5,
-      repeat: -1,
-    });
 
     this.anims.create({
       key: "HumanChopTree",
@@ -204,7 +196,6 @@ export default class ExternalScene extends window.BaseScene {
 
     // Play Anims
 
-    this.trustedUserAnimatedHalo.anims.play("TrustedUserAnimatedHalo", true);
     this.humanChopTree.anims.play("HumanChopTree", true);
 
     // For local testing, allow Scene refresh with spacebar
@@ -226,8 +217,6 @@ export default class ExternalScene extends window.BaseScene {
         display player position for debugging
     */
     //console.log(this.currentPlayer.x, this.currentPlayer.y);
-
-    this.haloFollowPlayer();
   }
 
   CheckPlayerDistance(x: number, y: number) {

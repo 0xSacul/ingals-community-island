@@ -90,10 +90,6 @@ export default class ExternalScene extends window.BaseScene {
           if (this.CheckPlayerDistance(280, 532.5)) return;
 
           window.openModal({
-            npc: {
-              name: "Pedro",
-              clothing: Pedro,
-            },
             type: "speaking",
             messages: [
               {
